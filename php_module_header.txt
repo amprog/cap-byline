@@ -1,0 +1,7 @@
+ *
+ * @link       https://github.com/amprog/cap-byline
+ * @since      2.0.0
+ *
+ * @package    CAP_Byline
+ * @subpackage CAP_Byline/includes
+ **/

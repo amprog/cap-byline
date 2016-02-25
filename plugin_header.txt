@@ -1,0 +1,26 @@
+/**
+Plugin Name: CAP Byline
+Plugin URI:  https://github.com/amprog/cap-byline
+Description: Provides a CAP standardized method for choosing authors for posts
+Version:     1.2.0
+Author:      Seth Rubenstein for The Center for American Progress
+Author URI:  https://github.com/orgs/amprog/people/sethrubenstein
+License:     GPL3
+License URI: http://www.gnu.org/licenses/gpl.html
+Text Domain: cap-byline
+Domain Path: /intl
+
+
+CAP Byline is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+CAP Byline is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with CAP Byline.  If not, see <http://www.gnu.org/licenses/gpl.html>.
+ **/
