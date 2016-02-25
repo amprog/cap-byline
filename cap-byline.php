@@ -396,12 +396,23 @@ function cap_byline_array_set_terms( $post_id ) {
         if ( empty($field_data) ) {
             // Get the author information
             $author_slug = get_the_author_meta( 'user_login', $post->post_author );
-            $author_data = get_term_by( 'slug', $author_slug, 'person' );
-            $author_id = $author_data->term_id;
+            if(term_exists($author_slug, 'person')) {
+                $author_data = get_term_by( 'slug', $author_slug, 'person' );
+                $author_id = $author_data->term_id;
+            } else {
+                $author_data = "";
+                $author_id = null;
+            }
+
             // Check for an author byline override. Basically this is a intern function.
             $default_byline_override = get_user_meta( $post->post_author, '_default_byline', true );
-            $default_byline = get_term_by( 'id', $default_byline_override, 'person' );
-            $default_byline_id = $default_byline->term_id;
+            if(term_exists($default_byline_override, 'person')) {
+                $default_byline = get_term_by( 'id', $default_byline_override, 'person' );
+                $default_byline_id = $default_byline->term_id;
+            } else {
+                $default_byline = "";
+                $default_byline_id = null;
+            }
 
             // If a override is present use that first
             if ( !empty($default_byline_override) && false === get_field( 'disable_auto_author_select','options' ) ) {
@@ -438,7 +449,7 @@ add_action('acf/save_post', 'cap_byline_array_set_terms', 20);
 function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return_slugs=true, $byline_field='byline_array') {
     $people = get_field($byline_field, $post_id);
 	$byline_array = array();
-	
+
     if ( !empty($people) ) {
         // let's setup an array to organize these people based on some conditions below
         foreach ( $people as $person ) {
@@ -538,11 +549,15 @@ function get_cap_byline($type, $post_id) {
         esc_html( get_the_modified_date($time_format, $post_id) ) //%4$s
     );
 
+    $auth_array = get_cap_authors($post_id, null, true, null);
+
     $markup = '';
     if ( 'dateonly' == $type ) {
          $markup .= '<span class="posted-on">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
-        $markup .= ' by '.get_cap_authors($post_id, null, null, null);
+        if(is_array($auth_array) && count($auth_array) >= 1) {
+            $markup .= ' by '.get_cap_authors($post_id, null, null, null);
+        }
     } else {
 
         if( has_filter('cap_full_byline_open') ) {
@@ -552,13 +567,15 @@ function get_cap_byline($type, $post_id) {
         if ( has_filter('cap_full_byline_persons') ) {
             $markup .= apply_filters('cap_full_byline_persons', $content, $post_id);
         } else {
-            $markup .= '<span class="byline"> by ';
-            if ('nolinks' == $type) {
-                $markup .= get_cap_authors($post_id, true, null, null);
-            } else {
-                $markup .= get_cap_authors($post_id, null, null, null);
+            if(is_array($auth_array) && count($auth_array) >= 1) {
+                $markup .= '<span class="byline"> by ';
+                if ('nolinks' == $type) {
+                    $markup .= get_cap_authors($post_id, true, null, null);
+                } else {
+                    $markup .= get_cap_authors($post_id, null, null, null);
+                }
+                $markup .= '</span>';
             }
-            $markup .= '</span>';
         }
 
         if( has_filter('cap_full_byline_time') ) {
