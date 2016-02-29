@@ -11,8 +11,8 @@ DB_PASS=$3
 DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
 
-WP_TESTS_DIR=${WP_TESTS_DIR-./wordpress-tests-lib}
-WP_CORE_DIR=${WP_CORE_DIR-./wordpress/}
+WP_TESTS_DIR='./wordpress-tests-lib'
+WP_CORE_DIR='./wordpress/'
 
 download() {
     if [ `which curl` ]; then
@@ -81,9 +81,9 @@ install_test_suite() {
 		svn co --quiet https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
 	fi
 
-	cd $WP_TESTS_DIR
+	#cd $WP_TESTS_DIR
 
-	if [ ! -f wp-tests-config.php ]; then
+	if [ ! -f ${WP_TESTS_DIR}/wp-tests-config.php ]; then
 		download https://develop.svn.wordpress.org/${WP_TESTS_TAG}/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR':" "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s/youremptytestdbnamehere/$DB_NAME/" "$WP_TESTS_DIR"/wp-tests-config.php

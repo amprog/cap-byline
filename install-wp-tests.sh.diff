@@ -1,0 +1,14 @@
+14,15c14,15
+< WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
+< WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
+---
+> WP_TESTS_DIR='./wordpress-tests-lib'
+> WP_CORE_DIR='./wordpress/'
+84c84
+< 	cd $WP_TESTS_DIR
+---
+> 	#cd $WP_TESTS_DIR
+86c86
+< 	if [ ! -f wp-tests-config.php ]; then
+---
+> 	if [ ! -f ${WP_TESTS_DIR}/wp-tests-config.php ]; then

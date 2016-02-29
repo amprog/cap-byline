@@ -29,13 +29,13 @@
  * along with CAP_Byline.  If not, see <http://www.gnu.org/licenses/gpl.html>.
  **/
 
-require_once("db_definitions.php");
+require_once(dirname(__FILE__) . "/db_definitions.php");
 
-foreach($CAP_PLUGIN_TEMPLATE_table_definitions as $k => $v) {
+foreach($CAP_Byline_table_definitions as $k => $v) {
     $wpdb->query($v["drop"]);
 }
 
-foreach($CAP_PLUGIN_TEMPLATE_view_definitions as $k => $v) {
+foreach($CAP_Byline_view_definitions as $k => $v) {
     $wpdb->query($v["drop"]);
 }
 

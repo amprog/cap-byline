@@ -38,8 +38,9 @@
  **/
 
 global $wpdb;
+require(dirname(__FILE__) . "/../constants/constants.php");
 
-$fqdb_prefix = $wpdb->prefix . "_" . $CAP_Byline_constants["prefix"] . "_";
+$fqdb_prefix = $wpdb->prefix . $CAP_Byline_constants["prefix"] . "_";
 
 $CAP_Byline_table_definitions = array(
     "table_1" => array(
@@ -48,14 +49,11 @@ $CAP_Byline_table_definitions = array(
         "name"   => "{$fqdb_prefix}table_1",
     ),
 );
-
 $CAP_Byline_view_definitions = array(
     "view_1" => array(
-        "create" => "CREATE VIEW IF NOT EXISTS {$fqdb_prefix}view_1 AS SELECT * FROM {$fqdb_prefix}table_1;",
+        "create" => "CREATE OR REPLACE VIEW {$fqdb_prefix}view_1 AS SELECT * FROM {$fqdb_prefix}table_1;",
         "drop"   => "DROP VIEW IF EXISTS {$fqdb_prefix}view_1;",
         "name"   => "{$fqdb_prefix}view_1",
     ),
-
 );
-
 ?>
