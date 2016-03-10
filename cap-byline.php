@@ -553,7 +553,7 @@ function get_cap_byline($type, $post_id) {
 
     $markup = '';
     if ( 'dateonly' == $type ) {
-         $markup .= '<span class="posted-on">'.$time_string.'</span>';
+         $markup .= '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
             $markup .= ' ' . __('by') . ' ' . get_cap_authors($post_id, null, null, null);
@@ -581,7 +581,7 @@ function get_cap_byline($type, $post_id) {
         if( has_filter('cap_full_byline_time') ) {
             $markup .= apply_filters('cap_full_byline_time', $content, $post_id);
         } else {
-            $markup .= ' <span class="posted-on">' . __('Posted on') . ' ' . $time_string . '</span>';
+            $markup .= ' <span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">' . __('Posted on') . ' ' . $time_string . '</span>';
         }
 
         if( has_filter('cap_full_byline_close') ) {
