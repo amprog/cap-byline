@@ -3,7 +3,7 @@
  * Plugin Name: CAP Byline
  * Plugin URI: https://github.com/amprog/cap-byline
  * Description: Provides a CAP standardized method for choosing authors for posts
- * Version: 1.2
+ * Version: 1.2.1
  * Author: Seth Rubenstein for Center for American Progress
  * Author URI: https://github.com/amprog
  * License: GPL2
@@ -33,7 +33,7 @@ function person_tax_create() {
 add_action( 'init', 'person_tax_create' );
 
 function persons_column($columns) {
-    $columns['persons'] = 'Persons';
+    $columns['persons'] = __('Persons');
     return $columns;
 }
 add_filter('manage_posts_columns', 'persons_column');
@@ -69,20 +69,20 @@ function cap_byline_activate() {
         $form = Array (
             'labelPlacement' => 'top_label',
             'useCurrentUserAsAuthor' => 1,
-            'title' => 'Contact Author',
-            'description' => 'Fill out the form below to contact this author',
+            'title' => __('Contact Author'),
+            'description' => __('Fill out the form below to contact this author'),
             'descriptionPlacement' => 'below',
-            'button' => Array ( 'type' => 'text', 'text' => 'Submit' ),
+            'button' => Array ( 'type' => 'text', 'text' => __('Submit') ),
             'fields' => Array (
                     '0' => Array (
                         'id' => '1',
                         'isRequired' => '1',
                         'size' => 'medium',
                         'type' => 'name',
-                        'label' => 'Name',
+                        'label' => __('Name'),
                         'inputs' =>Array (
-                                '0' => Array ( 'id' => '1.3', 'label' => 'First' ),
-                                '1' => Array ( 'id' => '1.6', 'label' => 'Last' )
+                                '0' => Array ( 'id' => '1.3', 'label' => __('First') ),
+                                '1' => Array ( 'id' => '1.6', 'label' => __('Last') )
                                 ),
                         'formId' => '2',
                         'pageNumber' => '1',
@@ -93,7 +93,7 @@ function cap_byline_activate() {
                             'isRequired' => '1',
                             'size' => 'medium',
                             'type' => 'email',
-                            'label' => 'Email',
+                            'label' => __('Email'),
                             'formId' => '2',
                             'pageNumber' => '1',
                             'descriptionPlacement' => 'below',
@@ -103,7 +103,7 @@ function cap_byline_activate() {
                         'isRequired' => '1',
                         'size' => 'medium',
                         'type' => 'textarea',
-                        'label' => 'Message',
+                        'label' => __('Message'),
                         'formId' => '2',
                         'pageNumber' => '1',
                         'descriptionPlacement' => 'below',
@@ -114,7 +114,7 @@ function cap_byline_activate() {
                         'size' => 'medium',
                         'type' => 'hidden',
                         'inputName' => 'author_contact_email',
-                        'label' => 'To',
+                        'label' => __('To'),
                         'formId' => 2,
                         'pageNumber' => 1,
                         'descriptionPlacement' => 'below'
@@ -127,10 +127,10 @@ function cap_byline_activate() {
                 '53a057ebea107' => Array (
                     'id' => '53a057ebea107',
                     'to' => '{admin_email}',
-                    'name' => 'Admin Notification',
+                    'name' => __('Admin Notification'),
                     'event' => 'form_submission',
                     'toType' => 'email',
-                    'subject' => 'You have received a message from '.get_bloginfo('name').'',
+                    'subject' => sprintf(__('You have received a message from %s'), get_bloginfo('name')),
                     'message' => '{all_fields}'
                 ),
             ),
@@ -139,8 +139,8 @@ function cap_byline_activate() {
                     'id' => '53a057ebeadd6',
                     'isDefault' => '1',
                     'type' => 'message',
-                    'name' => 'Default Confirmation',
-                    'message' => 'Thank you for contacting me.',
+                    'name' => __('Default Confirmation'),
+                    'message' => __('Thank you for contacting me.'),
                     'disableAutoformat' => null,
                     'pageId' => null,
                     'url' => null,
@@ -163,11 +163,11 @@ register_activation_hook( __FILE__, 'cap_byline_activate' );
 if( function_exists("register_field_group") ) {
     register_field_group(array (
         'id' => 'acf_person-settings',
-        'title' => 'Person Settings',
+        'title' => __('Person Settings'),
         'fields' => array (
             array (
                 'key' => 'field_539efe9038185',
-                'label' => 'Bio Pic',
+                'label' => __('Bio Pic'),
                 'name' => 'person_photo',
                 'type' => 'image',
                 'save_format' => 'id',
@@ -176,7 +176,7 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_55197b1a6eeb8',
-                'label' => 'Hi-res Bio Pic',
+                'label' => __('Hi-res Bio Pic'),
                 'name' => 'person_photo_hi_res',
                 'type' => 'image',
                 'save_format' => 'id',
@@ -185,7 +185,7 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_539f068a98928',
-                'label' => 'Title',
+                'label' => __('Title'),
                 'name' => 'person_title',
                 'type' => 'text',
                 'default_value' => '',
@@ -197,7 +197,7 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_539f06f598929',
-                'label' => 'Contact Email',
+                'label' => __('Contact Email'),
                 'name' => 'person_email',
                 'type' => 'email',
                 'default_value' => '',
@@ -207,7 +207,7 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_539efea738186',
-                'label' => 'Twitter Handle',
+                'label' => __('Twitter Handle'),
                 'name' => 'person_twitter_handle',
                 'type' => 'text',
                 'default_value' => '',
@@ -219,7 +219,7 @@ if( function_exists("register_field_group") ) {
             ),
             array(
                 'key'           => 'field_560434a4d45fe',
-                'label'         => 'Facebook ID',
+                'label'         => __('Facebook ID'),
                 'name'          => 'person_facebook_id',
                 'type'          => 'text',
                 'default_value' => '',
@@ -231,10 +231,10 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_53a2ff7d56f11',
-                'label' => 'Person Is Linked?',
+                'label' => __('Person Is Linked?'),
                 'name' => 'person_is_linked',
                 'type' => 'true_false',
-                'instructions' => 'Checking this field will enable the bio link for a person in the byline.',
+                'instructions' => __('Checking this field will enable the bio link for a person in the byline.'),
                 'message' => '',
                 'default_value' => 0,
             ),
@@ -260,14 +260,14 @@ if( function_exists("register_field_group") ) {
     ));
     register_field_group(array (
         'id' => 'acf_cap-byline-settings',
-        'title' => 'CAP Byline Settings',
+        'title' => __('CAP Byline Settings'),
         'fields' => array (
             array (
                 'key' => 'field_53a069c4d2202',
-                'label' => 'Author Contact Form ID',
+                'label' => __('Author Contact Form ID'),
                 'name' => 'author_contact_form_id',
                 'type' => 'text',
-                'instructions' => 'Enter the ID of the form titled "Contact Author" for the contact functionality to work on author bio pages.',
+                'instructions' => __('Enter the ID of the form titled "Contact Author" for the contact functionality to work on author bio pages.'),
                 'default_value' => '',
                 'placeholder' => '',
                 'prepend' => '',
@@ -277,28 +277,28 @@ if( function_exists("register_field_group") ) {
             ),
             array (
                 'key' => 'field_53a2ff7d56f69',
-                'label' => 'Disable Auto Author Select',
+                'label' => __('Disable Auto Author Select'),
                 'name' => 'disable_auto_author_select',
                 'type' => 'true_false',
-                'instructions' => 'Checking this field will disable the auto selection of the author when writing a post.',
+                'instructions' => __('Checking this field will disable the auto selection of the author when writing a post.'),
                 'message' => '',
                 'default_value' => 0,
             ),
             array (
                 'key' => 'field_53a2fe7d56009',
-                'label' => 'Disable Updated Time',
+                'label' => __('Disable Updated Time'),
                 'name' => 'global_disable_update_time',
                 'type' => 'true_false',
-                'instructions' => 'Checking this field will disable the updated time globally.',
+                'instructions' => __('Checking this field will disable the updated time globally.'),
                 'message' => '',
                 'default_value' => 0,
             ),
             array (
                 'key' => 'field_53a2fe7d51239',
-                'label' => 'Display Post Time',
+                'label' => __('Display Post Time'),
                 'name' => 'global_display_post_time',
                 'type' => 'true_false',
-                'instructions' => 'Checking this field will display the time a post is published globally.',
+                'instructions' => __('Checking this field will display the time a post is published globally.'),
                 'message' => '',
                 'default_value' => 1,
             ),
@@ -328,15 +328,15 @@ if( function_exists("register_field_group") ) {
      */
     register_field_group(array (
         'key' => 'group_53f38caa7634f',
-        'title' => 'Byline',
+        'title' => __('Byline'),
         'fields' => array (
             array (
                 'key' => 'field_53f38cd042a42',
-                'label' => 'Byline',
+                'label' => __('Byline'),
                 'name' => 'byline_array',
                 'prefix' => '',
                 'type' => 'taxonomy',
-                'instructions' => 'This field will autocomplete names. Start typing to add existing person(s) to this post.',
+                'instructions' => __('This field will autocomplete names. Start typing to add existing person(s) to this post.'),
                 'required' => 0,
                 'conditional_logic' => 0,
                 'taxonomy' => 'person',
@@ -539,7 +539,7 @@ function get_cap_byline($type, $post_id) {
 
     // if the post time is not within one hour of the updated time...
     if ( get_the_modified_time('jnyH') != get_the_time('jnyH') && true == get_post_meta( $post_id, 'cap_enable_updated_time', true ) && false == get_field( 'global_disable_update_time', 'options' ) ) {
-        $time_string .= '&nbsp;<time class="updated" datetime="%3$s">Updated: %4$s</time>';
+        $time_string .= '&nbsp;<time class="updated" datetime="%3$s">' . __('Updated') . ': %4$s</time>';
     }
 
     $time_string = sprintf( $time_string,
@@ -556,7 +556,7 @@ function get_cap_byline($type, $post_id) {
          $markup .= '<span class="posted-on">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup .= ' by '.get_cap_authors($post_id, null, null, null);
+            $markup .= ' ' . __('by') . ' ' . get_cap_authors($post_id, null, null, null);
         }
     } else {
 
@@ -568,7 +568,7 @@ function get_cap_byline($type, $post_id) {
             $markup .= apply_filters('cap_full_byline_persons', $content, $post_id);
         } else {
             if(is_array($auth_array) && count($auth_array) >= 1) {
-                $markup .= '<span class="byline"> by ';
+                $markup .= '<span class="byline"> ' . __('by') . ' ';
                 if ('nolinks' == $type) {
                     $markup .= get_cap_authors($post_id, true, null, null);
                 } else {
@@ -581,7 +581,7 @@ function get_cap_byline($type, $post_id) {
         if( has_filter('cap_full_byline_time') ) {
             $markup .= apply_filters('cap_full_byline_time', $content, $post_id);
         } else {
-            $markup .= ' <span class="posted-on">Posted on '.$time_string.'</span>';
+            $markup .= ' <span class="posted-on">' . __('Posted on') . ' ' . $time_string . '</span>';
         }
 
         if( has_filter('cap_full_byline_close') ) {
@@ -635,7 +635,7 @@ if ( ! function_exists( 'cap_person_bio' ) ) {
 
             // optional hi res photo
             if (!empty($person_photo_hi_res_output)) {
-                $markup .= '<div class="bio-pic-hi-res"><a href="'.$person_photo_hi_res_output[0].'">Download hi-res</a></div>';
+                $markup .= '<div class="bio-pic-hi-res"><a href="'.$person_photo_hi_res_output[0].'">' . __('Download hi-res') . '</a></div>';
             }
 
             $markup .= '</div>';
@@ -655,7 +655,7 @@ if ( ! function_exists( 'cap_person_bio' ) ) {
 
         // if the bio has an email associated add a contact modal form to $markup also check the form ID is present
         if ( !empty($person_email) ) {
-            $markup .= '<a id="contact-modal-link" class="cap-contact-modal-link" href="javascript:void(0);"><img src="'.plugin_dir_url('cap-byline.php').'/cap-byline/mail.png" width="18px"> Contact '.$person->name.'</a>';
+            $markup .= '<a id="contact-modal-link" class="cap-contact-modal-link" href="javascript:void(0);"><img src="'.plugin_dir_url('cap-byline.php').'/cap-byline/mail.png" width="18px"> ' . __('Contact') . ' ' . $person->name.'</a>';
             $markup .= '
             <script>
             jQuery(document).ready(function(){
@@ -728,7 +728,7 @@ if ( ! function_exists( 'cap_person_bio' ) ) {
         }
         // if the bio has a twitter handle associated add the follow button to $markup
         if ( !empty($person_twitter_handle) ) {
-            $markup .= '<span id="twitter-follow"><a href="https://twitter.com/'.$person_twitter_handle.'" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @'.$person_twitter_handle.'</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></span>';
+            $markup .= '<span id="twitter-follow"><a href="https://twitter.com/'.$person_twitter_handle.'" class="twitter-follow-button" data-show-count="false" data-lang="en">' . __('Follow') . ' @'.$person_twitter_handle.'</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></span>';
         }
 
         $markup .= '</div>'; // close out .bio
@@ -745,12 +745,12 @@ function cap_byline_contact_form_email($entry, $form) {
         $email_from_first = $entry['1.3'];
         $email_from_last = $entry['1.6'];
         $email_from = $entry[2];
-        $email_message = '<strong>You have a new message from '.$email_from_first.' '.$email_from_last.' at '.$email_from.'</strong><br><br>';
+        $email_message = '<strong>' . __('You have a new message from') . ' ' . $email_from_first.' '.$email_from_last.' ' . __('at') . ' '.$email_from.'</strong><br><br>';
         $email_message .= $entry[3];
         if ( !empty($email_to) ){
             $mail_headers[] = 'From: "' . $email_from_first . ' ' . $email_from_last . ' via AmericanProgress" <no-reply@americanprogress.org>';
             $mail_headers[] = "Reply-To: $email_from";
-            wp_mail( $email_to, 'You have a new message from '.$email_from_first.' '.$email_from_last.'', $email_message, $mail_headers );
+            wp_mail( $email_to, __('You have a new message from') . ' '.$email_from_first.' '.$email_from_last.'', $email_message, $mail_headers );
         }
     }
 }
