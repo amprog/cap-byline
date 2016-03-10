@@ -26,26 +26,34 @@
  * along with CAP_Byline.  If not, see <http://www.gnu.org/licenses/gpl.html>.
  **/
 
+include_once("trait_Debug.php");
+
 /**
  * Fired during plugin deactivation.
  *
  * This class defines all code necessary to run during the plugin's deactivation.
  *
- * @since      1.0.0
+ * @since      2.0.0
  * @package    CAP_PLUGIN_TEMPLATE
  * @subpackage CAP_PLUGIN_TEMPLATE/includes
- * @author     John Q. Public <jqp@americanprogress.org> for The Center for American Progress
+ * @author     Eric Helvey <ehelvey@americanprogress.org>
  */
 class CAP_PLUGIN_TEMPLATE_Deactivator
 {
+    use DebugLog;
+
 	/**
-	 * Short Description. (use period)
+	 * Actions to perform on plugin deactivation.
 	 *
-	 * Long Description.
+	 * On deactivation, we'll need to
 	 *
-	 * @since    1.0.0
+	 * @since    2.0.0
 	 */
-	public static function deactivate() {
+	public static function deactivate()
+	{
+	    global $CAP_Byline_instance;
+
+
 	}
 }
 

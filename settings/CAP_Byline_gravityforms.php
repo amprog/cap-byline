@@ -40,7 +40,7 @@ $CAP_Byline_gravityforms = array(
     'button' => array('type' => 'text', 'text' => __('Submit')),
     'enableHoneypot' => '1',
     'enableAnimation' => '1',
-    'id' => '2',
+    'id' => '1',
     'is_active' => '1',
     'date_created' => '2014-06-17 15:17:18',
     'is_trash' => '0',

@@ -4,7 +4,7 @@
  * pretty generic and should not need to be changed.
  *
  * @link       https://github.com/amprog/cap-byline
- * @since      1.0.0
+ * @since      2.0.0
  *
  * @package    CAP_Byline
  * @subpackage CAP_Byline/includes
@@ -26,6 +26,7 @@
  * You should have received a copy of the GNU General Public License
  * along with CAP_Byline.  If not, see <http://www.gnu.org/licenses/gpl.html>.
  **/
+include_once("trait_Debug.php");
 
 /**
  * Register all actions and filters for the plugin.
@@ -36,10 +37,12 @@
  *
  * @package    CAP_Byline
  * @subpackage CAP_Byline/includes
- * @author     Seth Rubenstein for The Center for American Progress
+ * @author     Eric Helvey <ehelvey@americanprogress.org> for The Center for American Progress
  **/
 class CAP_Byline_Loader
 {
+    use DebugLog;
+
   /**
    * Actions to be registered with the WordPress core.
    *
@@ -61,16 +64,6 @@ class CAP_Byline_Loader
 
 
   /**
-   * Filters to be registered with the WordPress core.
-   *
-   * @since    1.0.0
-   * @access   protected
-   * @var      array    $filters    The filters registered with WordPress to fire when the plugin loads.
-   */
-  private $debug = 0;
-
-
-  /**
    * Class constructor.
    *
    * @since    1.0.0
@@ -81,7 +74,11 @@ class CAP_Byline_Loader
     $this->filters = array();
 
     foreach($args as $k=>$v) {
+        if($k == "debug") {
+            self::$debug = $v;
+        } else {
       $this->$k = $v;
+        }
     }
   }
 
@@ -147,6 +144,24 @@ class CAP_Byline_Loader
       add_action($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority'], $hook['accepted_args']);
     }
   }
+
+
+  /**
+   * Unregister the filters and actions with WordPress.
+   *
+   * @since    1.0.0
+   */
+  public function shutdown()
+  {
+    foreach ($this->filters as $hook) {
+      remove_filter($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority']);
+    }
+
+    foreach ($this->actions as $hook) {
+      remove_action($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority']);
+    }
+  }
+
 }
 
 ?>

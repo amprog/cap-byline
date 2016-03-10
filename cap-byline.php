@@ -3,8 +3,8 @@
 Plugin Name: CAP Byline
 Plugin URI:  https://github.com/amprog/cap-byline
 Description: Provides a CAP standardized method for choosing authors for posts
-Version:     1.2.0
-Author:      Seth Rubenstein for The Center for American Progress
+Version:     2.0.0
+Author:      Eric Helvey & Seth Rubenstein for The Center for American Progress
 Author URI:  https://github.com/orgs/amprog/people/sethrubenstein
 License:     GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
