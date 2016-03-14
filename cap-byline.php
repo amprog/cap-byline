@@ -395,31 +395,33 @@ function cap_byline_array_set_terms( $post_id ) {
         // Also we're presuming to autoselect as a function only if no authors are present.
         if ( empty($field_data) ) {
             // Get the author information
-            $author_slug = get_the_author_meta( 'user_login', $post->post_author );
-            if(term_exists($author_slug, 'person')) {
-                $author_data = get_term_by( 'slug', $author_slug, 'person' );
-                $author_id = $author_data->term_id;
-            } else {
-                $author_data = "";
-                $author_id = null;
-            }
+            if(is_object($post) && isset($post->post_author)) {
+                $author_slug = get_the_author_meta( 'user_login', $post->post_author );
+                if(term_exists($author_slug, 'person')) {
+                    $author_data = get_term_by( 'slug', $author_slug, 'person' );
+                    $author_id = $author_data->term_id;
+                } else {
+                    $author_data = "";
+                    $author_id = null;
+                }
+    
+                // Check for an author byline override. Basically this is a intern function.
+                $default_byline_override = get_user_meta( $post->post_author, '_default_byline', true );
+                if(term_exists($default_byline_override, 'person')) {
+                    $default_byline = get_term_by( 'id', $default_byline_override, 'person' );
+                    $default_byline_id = $default_byline->term_id;
+                } else {
+                    $default_byline = "";
+                    $default_byline_id = null;
+                }
 
-            // Check for an author byline override. Basically this is a intern function.
-            $default_byline_override = get_user_meta( $post->post_author, '_default_byline', true );
-            if(term_exists($default_byline_override, 'person')) {
-                $default_byline = get_term_by( 'id', $default_byline_override, 'person' );
-                $default_byline_id = $default_byline->term_id;
-            } else {
-                $default_byline = "";
-                $default_byline_id = null;
-            }
-
-            // If a override is present use that first
-            if ( !empty($default_byline_override) && false === get_field( 'disable_auto_author_select','options' ) ) {
-                $persons[] = $default_byline_id;
-            // If a person exists with the slug of the author then auto add it.
-            } elseif ( term_exists( $author_slug, 'person' ) && false === get_field( 'disable_auto_author_select','options' ) ) {
-                $persons[] = $author_id;
+                // If a override is present use that first
+                if ( !empty($default_byline_override) && false === get_field( 'disable_auto_author_select','options' ) ) {
+                    $persons[] = $default_byline_id;
+                // If a person exists with the slug of the author then auto add it.
+                } elseif ( term_exists( $author_slug, 'person' ) && false === get_field( 'disable_auto_author_select','options' ) ) {
+                    $persons[] = $author_id;
+                }
             }
 
         }
