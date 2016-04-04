@@ -236,7 +236,7 @@ if( function_exists("register_field_group") ) {
                 'type' => 'true_false',
                 'instructions' => __('Checking this field will enable the bio link for a person in the byline.'),
                 'message' => '',
-                'default_value' => 0,
+                'default_value' => 1,
             ),
         ),
         'location' => array (
