@@ -524,7 +524,7 @@ function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return
     $last_item = array_pop($output_array);
 
     $output = implode(', ', $output_array);
-    $output .= ($output && has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $content) : ' & ') . $last_item;
+    $output .= ($output ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $content) : ' & ') : "") . $last_item;
 
     return $output;
 }
