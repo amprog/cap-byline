@@ -404,7 +404,7 @@ function cap_byline_array_set_terms( $post_id ) {
                     $author_data = "";
                     $author_id = null;
                 }
-    
+
                 // Check for an author byline override. Basically this is a intern function.
                 $default_byline_override = get_user_meta( $post->post_author, '_default_byline', true );
                 if(term_exists($default_byline_override, 'person')) {
@@ -558,7 +558,7 @@ function get_cap_byline($type, $post_id) {
          $markup .= '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup .= ' ' . __('by') . ' ' . get_cap_authors($post_id, null, null, null);
+            $markup .= ' ' . __('By') . ' ' . get_cap_authors($post_id, null, null, null);
         }
     } else {
 
