@@ -448,82 +448,85 @@ add_action('acf/save_post', 'cap_byline_array_set_terms', 20);
  * @param $return_slugs defaults to true, if $as_array is set to true return person slugs if set to false then return names
  * @param $byline_field defaults to byline_array. This allows you to create identical other fields such as "with" for American Progress and check for that new field.
  */
-function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return_slugs=true, $byline_field='byline_array') {
+function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return_slugs=true, $byline_field='byline_array')
+{
     $people = get_field($byline_field, $post_id);
 	$byline_array = array();
 
-    if ( !empty($people) ) {
+    if (!empty($people)) {
         // let's setup an array to organize these people based on some conditions below
-        foreach ( $people as $person ) {
-            $get_byline = get_term_by( 'id', $person, 'person' );
+        foreach ($people as $person) {
+            $get_byline = get_term_by('id', $person, 'person');
             $byline_array[] = $get_byline->slug;
         }
     }
 
+    if (empty($byline_array)) {
+        return ($as_array ? $byline_array : "");
+    }
+
     // Check for the display function, if as_array is set to true then just return the array...
     // if not then proceed with the listing function.
-    if ( true == $as_array ) {
-
-        if ( true == $return_slugs ) {
+    if (true == $as_array) {
+        if (true == $return_slugs) {
             return $byline_array;
         } else {
-            // Because we're setting to return as an array but not to return slugs we'll return the full name of the persons in an array.
+            // Because we're setting to return as an array but not to return slugs we'll
+            // return the full name of the persons in an array.
             $return_names_array = array();
-            foreach ( $byline_array as $author ) {
-                $data = get_term_by( 'slug', $author, 'person', 'ARRAY_A');
+
+            foreach ($byline_array as $author) {
+                $data = get_term_by('slug', $author, 'person', 'ARRAY_A');
                 $name = $data['name'];
                 $return_names_array[] = $name;
             }
             return $return_names_array;
         }
-
-    } else {
-        // We're compiling a byline list of the authors of this post
-        $i = 1;
-        $total_num_people = count($byline_array);
-        $output = '';
-        if (!empty($byline_array)) {
-            foreach ( $byline_array as $author ) {
-                $data = get_term_by( 'slug', $author, 'person', 'ARRAY_A');
-                $name = $data['name'];
-                $slug = $data['slug'];
-                $id = $data['term_id'];
-                $person_twitter_handle = get_field( 'person_twitter_handle', 'person_'.$id );
-
-                //If disable links is set to true or if this person specifically has no linked bio, display name only.
-                if ( true == $disable_link || false == get_field('person_is_linked', 'person_'.$id ) ) {
-                    $output .= $name;
-                } else {
-                    $output .= '<a href="/?person='.$slug.'">'.$name.'</a>';
-                    // Checks for single instance of any post type, not just Wordpress defaults
-                    if ( !empty($person_twitter_handle) && is_singular( get_post_type() ) ) {
-                        $output .= "<a href=\"https://twitter.com/intent/user?screen_name=".$person_twitter_handle."\"><img src=\"" .content_url(). "/plugins/cap-byline/bird_blue_16.png\" class=\"twitter-bird\"></a>";
-                    }
-                }
-
-                if ( $total_num_people > 1 && $total_num_people <= 2 ) {
-                    if ( $i != $total_num_people ) {
-                        if (has_filter('cap_byline_and')) {
-                            $output .= apply_filters('cap_byline_and', $content);
-                        } else {
-                            $output .= ' & ';
-                        }
-                    }
-                } elseif ( $total_num_people > 2 ) {
-                    if ( $i != $total_num_people ) {
-                        $output .= ', ';
-                    }
-                }
-                $i++;
-            }
-        } else {
-            /**
-             * @todo Replace with wp_error
-             */
-            $output = "<!--Found No Data, Check CAP Byline Plugin-->";
-        }
-        return $output;
     }
+
+
+    // We're compiling a byline list of the authors of this post
+    $i = 1;
+    $total_num_people = count($byline_array);
+    $output_array = array();
+    $output = '';
+
+    foreach ($byline_array as $author) {
+        $data = get_term_by('slug', $author, 'person', 'ARRAY_A');
+        $name = $data['name'];
+        $slug = $data['slug'];
+        $id = $data['term_id'];
+        $person_twitter_handle = get_field('person_twitter_handle', 'person_' . $id);
+
+        //If disable links is set to true or if this person specifically has no linked bio, display name only.
+        if (true == $disable_link || false == get_field('person_is_linked', 'person_' . $id)) {
+            $output_array[] = $name;
+        } else {
+            // If this person has configured a twitter account, use it.
+            if (!empty($person_twitter_handle) && is_singular(get_post_type())) {
+                $tweeter = "<a href=\"https://twitter.com/intent/user?screen_name=" .
+                           $person_twitter_handle .
+                           "\"><img src=\"" .
+                           content_url() .
+                           "/plugins/cap-byline/bird_blue_16.png\" class=\"twitter-bird\"></a>";
+            } else {
+                $tweeter = "";
+            }
+
+            $output_array[] = sprintf('<a href="/?person=%s">%s</a>%s', $slug, $name, $tweeter);
+        }
+    }
+
+    if (true == $as_array) {
+        return $output_array;
+    }
+
+    $last_item = array_pop($output_array);
+
+    $output = implode(', ', $output_array);
+    $output .= ($output && has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $content) : ' & ') . $last_item;
+
+    return $output;
 }
 
 /**
