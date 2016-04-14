@@ -457,7 +457,9 @@ function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return
         // let's setup an array to organize these people based on some conditions below
         foreach ($people as $person) {
             $get_byline = get_term_by('id', $person, 'person');
-            $byline_array[] = $get_byline->slug;
+            if(isset($get_byline) && is_object($get_byline) && isset($get_byline->slug) && !empty($get_byline->slug)) {
+                $byline_array[] = $get_byline->slug;
+            }
         }
     }
 
