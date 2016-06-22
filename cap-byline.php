@@ -237,6 +237,15 @@ if( function_exists("register_field_group") ) {
                 'instructions' => __('Checking this field will enable the bio link for a person in the byline.', 'cap-byline'),
                 'message' => '',
             ),
+            array (
+                'key' => 'field_59r1fp0l56z77',
+                'label' => __('Person Is Inactive?', 'cap-byline'),
+                'name' => 'person_is_inactive',
+                'type' => 'true_false',
+                'instructions' => __('Checking this field if this person no longer works at CAP. It will prevent this person from being displayed anywhere on the front end.', 'cap-byline'),
+                'message' => '',
+                'default_value' => 0,
+            ),
         ),
         'location' => array (
             array (
