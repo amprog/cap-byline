@@ -435,9 +435,12 @@ function cap_byline_array_set_terms( $post_id ) {
         }
 
         // Go through the persons from the field add them to the persons array.
-        foreach ($field_data as $data) {
-            $persons[] = $data;
+        if(isset($field_data) && is_array($field_data) && count($field_data) > 0) {
+            foreach ($field_data as $data) {
+                $persons[] = $data;
+            }
         }
+
         // Go back and update the field with the new data
         update_field('field_53f38cd042a42', $persons);
         // Set this posts person terms to the persons array
