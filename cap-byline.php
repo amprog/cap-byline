@@ -509,7 +509,10 @@ function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return
         $person_twitter_handle = get_field('person_twitter_handle', 'person_' . $id);
 
         //If disable links is set to true or if this person specifically has no linked bio, display name only.
-        if (true == $disable_link || false == get_field('person_is_linked', 'person_' . $id)) {
+        if (   true == $disable_link
+            || false == get_field('person_is_linked', 'person_' . $id)
+            || true == get_field('person_is_inactive', 'person_' . $id)
+           ) {
             $output_array[] = $name;
         } else {
             // If this person has configured a twitter account, use it.
@@ -553,7 +556,10 @@ function get_cap_byline($type, $post_id) {
     $time_string = '<time class="published" datetime="%1$s">%2$s</time>';
 
     // if the post time is not within one hour of the updated time...
-    if ( get_the_modified_time('jnyH') != get_the_time('jnyH') && true == get_post_meta( $post_id, 'cap_enable_updated_time', true ) && false == get_field( 'global_disable_update_time', 'options' ) ) {
+    if (   get_the_modified_time('jnyH') != get_the_time('jnyH')
+        && true == get_post_meta( $post_id, 'cap_enable_updated_time', true )
+        && false == get_field( 'global_disable_update_time', 'options' )
+       ) {
         $time_string .= '&nbsp;<time class="updated" datetime="%3$s">' . __('Updated', 'cap-byline') . ': %4$s</time>';
     }
 
