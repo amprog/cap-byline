@@ -23,9 +23,9 @@ function person_tax_create() {
             'hierarchical' => false,
             // 'show_admin_column' => true,
             'capabilities' => array(
-                'manage_terms' => 'edit_others_posts',
-                'edit_terms' => 'edit_others_posts',
-                'delete_terms' => 'edit_others_posts'
+                'manage_terms' => 'manage_persons',
+                'edit_terms' => 'manage_persons',
+                'delete_terms' => 'manage_persons'
             )
         )
     );
