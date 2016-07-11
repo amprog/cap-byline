@@ -354,6 +354,23 @@ if( function_exists("register_field_group") ) {
                 'return_format' => 'id',
                 'multiple' => 0,
             ),
+            array (
+                'key' => 'field_53f38cwith42a42',
+                'label' => '"With" Byline',
+                'name' => 'byline_with_array',
+                'prefix' => '',
+                'type' => 'taxonomy',
+                'instructions' => __('This field will autocomplete names. Start typing to add existing person(s) to this post.', 'cap-byline'),
+                'required' => 0,
+                'conditional_logic' => 0,
+                'taxonomy' => 'person',
+                'field_type' => 'multi_select',
+                'allow_null' => 0,
+                'add_term' => 0,
+                'load_save_terms' => 0,
+                'return_format' => 'id',
+                'multiple' => 0,
+            ),
         ),
         'location' => array (
             array (
@@ -529,7 +546,13 @@ function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return
                 $tweeter = "";
             }
 
-            $output_array[] = sprintf('<a href="/?person=%s">%s</a>%s', $slug, $name, $tweeter);
+            $tout = sprintf('<a href="/?person=%s">%s</a>%s', $slug, $name, $tweeter);
+            if(has_filter('cap_byline_person_url')) {
+                $xout = apply_filters('cap_byline_person_url', $tout, $slug, $name, $tweeter);
+            } else {
+                $xout = $tout;
+            }
+            $output_array[] = $xout;
         }
     }
 
@@ -574,45 +597,56 @@ function get_cap_byline($type, $post_id) {
     );
 
     $auth_array = get_cap_authors($post_id, null, true, null);
+    $with_array = get_cap_authors($post_id, null, true, null, "byline_with_array");
 
-    $markup = '';
+    $markup = array();
     if ( 'dateonly' == $type ) {
-         $markup .= '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
+         $markup[] = '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup .= ' ' . __('By', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null);
+            $markup[] = ' ' . __('By', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null);
+            $markup[] = (get_post_meta($post_id, 'byline_with_array', true) ? ' ' . __('with', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null, "byline_with_array") : "");
         }
     } else {
 
         if( has_filter('cap_full_byline_open') ) {
-            $markup .= apply_filters('cap_full_byline_open', $content);
+            $markup[] = apply_filters('cap_full_byline_open', $content);
         }
 
         if ( has_filter('cap_full_byline_persons') ) {
-            $markup .= apply_filters('cap_full_byline_persons', $content, $post_id);
+            $markup[] = apply_filters('cap_full_byline_persons', $content, $post_id);
         } else {
             if(is_array($auth_array) && count($auth_array) >= 1) {
-                $markup .= '<span class="byline"> ' . __('by', 'cap-byline') . ' ';
+                $markup[] = '<span class="byline"> ';
+                $markup[] = __('by', 'cap-byline') . ' ';
                 if ('nolinks' == $type) {
-                    $markup .= get_cap_authors($post_id, true, null, null);
+                    $markup[] = get_cap_authors($post_id, true, null, null);
                 } else {
-                    $markup .= get_cap_authors($post_id, null, null, null);
+                    $markup[] = get_cap_authors($post_id, null, null, null);
                 }
-                $markup .= '</span>';
+                if(is_array($with_array) && count($with_array) >= 1) {
+                    $markup[] = __('with', 'cap-byline') . ' ';
+                    if ('nolinks' == $type) {
+                        $markup[] = get_cap_authors($post_id, true, null, null, "byline_with_array");
+                    } else {
+                        $markup[] = get_cap_authors($post_id, null, null, null, "byline_with_array");
+                    }
+                }
+                $markup[] = '</span>';
             }
         }
 
         if( has_filter('cap_full_byline_time') ) {
-            $markup .= apply_filters('cap_full_byline_time', $content, $post_id);
+            $markup[] = apply_filters('cap_full_byline_time', $content, $post_id);
         } else {
-            $markup .= ' <span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">' . __('Posted on', 'cap-byline') . ' ' . $time_string . '</span>';
+            $markup[] = ' <span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">' . __('Posted on', 'cap-byline') . ' ' . $time_string . '</span>';
         }
 
         if( has_filter('cap_full_byline_close') ) {
-            $markup .= apply_filters('cap_full_byline_close', $content);
+            $markup[] = apply_filters('cap_full_byline_close', $content);
         }
     }
-    return $markup;
+    return implode("\n", $markup);
 }
 
 function cap_byline($type) {
