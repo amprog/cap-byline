@@ -575,8 +575,10 @@ function get_cap_byline($type, $post_id) {
     // If is a single post page display the time, otherwise just display only the date.
     if (is_singular() && true===get_field( 'global_display_post_time', 'options')) {
         $time_format = 'F j, Y \a\t g:i a';
+        $strtime_format = "%B %e, %G %I:%M%P";
     } else {
         $time_format = 'F j, Y';
+        $strtime_format = "%B %e, %G";
     }
 
     $time_string = '<time class="published" datetime="%1$s">%2$s</time>';
@@ -586,14 +588,16 @@ function get_cap_byline($type, $post_id) {
         && true == get_post_meta( $post_id, 'cap_enable_updated_time', true )
         && false == get_field( 'global_disable_update_time', 'options' )
        ) {
-        $time_string .= '&nbsp;<time class="updated" datetime="%3$s">' . __('Updated', 'cap-byline') . ': %4$s</time>';
+        $time_string .= '&nbsp;<time class="updated" datetime="%3$s">'
+                       . ucfirst(has_filter('cap_byline_updated') ? apply_filters('cap_byline_updated', "") : __('updated', 'cap-byline'))
+                       . ': %4$s</time>';
     }
 
     $time_string = sprintf( $time_string,
         esc_attr( get_the_date($time_format, $post_id) ), //%1$s
-        esc_html( get_the_date($time_format, $post_id) ), //%2$s
+        esc_html( strftime($strtime_format, strtotime(preg_replace("/ at/", "", get_the_date($time_format, $post_id))))),
         esc_attr( get_the_modified_date($time_format, $post_id) ), //%3$s
-        esc_html( get_the_modified_date($time_format, $post_id) ) //%4$s
+        esc_html( strftime($strtime_format, strtotime(preg_replace("/ at/", "", get_the_modified_date($time_format, $post_id))))) //%4$s
     );
 
     $auth_array = get_cap_authors($post_id, null, true, null);
@@ -604,7 +608,10 @@ function get_cap_byline($type, $post_id) {
          $markup[] = '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup[] = ' ' . __('By', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null);
+            $markup[] = ' '
+                      . ucfirst(has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline'))
+                      . ' '
+                      . get_cap_authors($post_id, null, null, null);
             $markup[] = (get_post_meta($post_id, 'byline_with_array', true) ? ' ' . __('with', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null, "byline_with_array") : "");
         }
     } else {
@@ -618,14 +625,14 @@ function get_cap_byline($type, $post_id) {
         } else {
             if(is_array($auth_array) && count($auth_array) >= 1) {
                 $markup[] = '<span class="byline"> ';
-                $markup[] = __('by', 'cap-byline') . ' ';
+                $markup[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline')) . ' ';
                 if ('nolinks' == $type) {
                     $markup[] = get_cap_authors($post_id, true, null, null);
                 } else {
                     $markup[] = get_cap_authors($post_id, null, null, null);
                 }
                 if(is_array($with_array) && count($with_array) >= 1) {
-                    $markup[] = __('with', 'cap-byline') . ' ';
+                    $markup[] = (has_filter('cap_byline_with') ? apply_filters('cap_byline_with', "") : __('with', 'cap-byline')) . ' ';
                     if ('nolinks' == $type) {
                         $markup[] = get_cap_authors($post_id, true, null, null, "byline_with_array");
                     } else {
@@ -639,7 +646,12 @@ function get_cap_byline($type, $post_id) {
         if( has_filter('cap_full_byline_time') ) {
             $markup[] = apply_filters('cap_full_byline_time', $content, $post_id);
         } else {
-            $markup[] = ' <span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">' . __('Posted on', 'cap-byline') . ' ' . $time_string . '</span>';
+            $markup[] = ' <span class="posted-on'
+                      . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'
+                      . ucfirst(has_filter('cap_byline_published') ? apply_filters('cap_byline_published', "") : __('Posted on', 'cap-byline'))
+                      . ' '
+                      . $time_string
+                      . '</span>';
         }
 
         if( has_filter('cap_full_byline_close') ) {
