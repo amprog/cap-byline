@@ -478,100 +478,114 @@ add_action('acf/save_post', 'cap_byline_array_set_terms', 20);
  */
 function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return_slugs=true, $byline_field='byline_array')
 {
-    $people = get_field($byline_field, $post_id);
-	$byline_array = array();
+    $byline_array = get_cap_author_list($post_id, $byline_field);
+    return get_byline_output($byline_array, $disable_link, $as_array, $return_slugs);
+}
 
-    if (!empty($people)) {
-        // let's setup an array to organize these people based on some conditions below
-        foreach ($people as $person) {
-            $get_byline = get_term_by('id', $person, 'person');
-            if(isset($get_byline) && is_object($get_byline) && isset($get_byline->slug) && !empty($get_byline->slug)) {
-                $byline_array[] = $get_byline->slug;
-            }
-        }
-    }
 
+function get_byline_output($byline_array, $disable_link=false, $as_array=false, $return_slugs=true)
+{
     if (empty($byline_array)) {
         return ($as_array ? $byline_array : "");
     }
 
-    // Check for the display function, if as_array is set to true then just return the array...
-    // if not then proceed with the listing function.
-    if (true == $as_array) {
-        if (true == $return_slugs) {
-            return $byline_array;
+    if (true == $return_slugs) {
+        $slugs = array();
+        foreach($byline_array as $v) {
+            $slugs[] = ((isset($v) && is_array($v) && isset($v["slug"])) ? $v["slug"] : $v);
+        }
+        return $slugs;
+    } elseif (true == $disable_link) {
+        $names = array();
+        foreach ($byline_array as $v) {
+            $names[] = ((isset($v) && is_array($v) && isset($v["name"])) ? $v["name"] : $v);
+        }
+        if(true == $as_array) {
+            return $names;
         } else {
-            // Because we're setting to return as an array but not to return slugs we'll
-            // return the full name of the persons in an array.
-            $return_names_array = array();
-
-            foreach ($byline_array as $author) {
-                $data = get_term_by('slug', $author, 'person', 'ARRAY_A');
-                $name = $data['name'];
-                $return_names_array[] = $name;
-            }
-            return $return_names_array;
+            return _cap_implode($names);
+        }
+    } else {
+        $output = array();
+        foreach ($byline_array as $v) {
+            $output[] = ((isset($v) && is_array($v) && isset($v["output"])) ? $v["output"] : $v);
+        }
+        if(true == $as_array) {
+            return $output;
+        } else {
+            return _cap_implode($output);
         }
     }
+}
 
+function _cap_implode($the_array)
+{
+    $last_item = array_pop($the_array);
 
-    // We're compiling a byline list of the authors of this post
-    $i = 1;
-    $total_num_people = count($byline_array);
-    $output_array = array();
-    $output = '';
-
-    foreach ($byline_array as $author) {
-        $data = get_term_by('slug', $author, 'person', 'ARRAY_A');
-        $name = $data['name'];
-        $slug = $data['slug'];
-        $id = $data['term_id'];
-        $person_twitter_handle = get_field('person_twitter_handle', 'person_' . $id);
-
-        //If disable links is set to true or if this person specifically has no linked bio, display name only.
-        if (   true == $disable_link
-            || false == get_field('person_is_linked', 'person_' . $id)
-            || true == get_field('person_is_inactive', 'person_' . $id)
-           ) {
-            $output_array[] = $name;
-        } else {
-            // If this person has configured a twitter account, use it.
-            if (!empty($person_twitter_handle) && is_singular(get_post_type())) {
-                $tweeter = "<a href=\"https://twitter.com/intent/user?screen_name=" .
-                           $person_twitter_handle .
-                           "\"><img src=\"" .
-                           content_url() .
-                           "/plugins/cap-byline/bird_blue_16.png\" class=\"twitter-bird\"></a>";
-            } else {
-                $tweeter = "";
-            }
-
-            $tout = sprintf('<a href="/?person=%s">%s</a>%s', $slug, $name, $tweeter);
-            if(has_filter('cap_byline_person_url')) {
-                $xout = apply_filters('cap_byline_person_url', $tout, $slug, $name, $tweeter);
-            } else {
-                $xout = $tout;
-            }
-            $output_array[] = $xout;
-        }
-    }
-
-    if (true == $as_array) {
-        return $output_array;
-    }
-
-    $last_item = array_pop($output_array);
-
-    $output = implode(', ', $output_array);
+    $output = implode(', ', $the_array);
     $output .= ($output ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', "") : ' & ') : "") . $last_item;
 
     return $output;
 }
 
+function get_cap_author_list($post_id, $byline_field='byline_array')
+{
+    #print "In get_cap_author_list for post $post_id and field $byline_field<br>\n";
+
+    if(isset($byline_field) && is_array($byline_field) && !empty($byline_field)) {
+        $people = $byline_field;
+    } else {
+        $people = get_field($byline_field, $post_id);
+    }
+	$byline_array = array();
+
+    if (!empty($people)) {
+        // let's setup an array to organize these people based on some conditions below
+        foreach ($people as $person) {
+            $get_byline = get_term_by('id', $person, 'person', 'ARRAY_A');
+
+            #var_dump($get_byline);
+
+            if(isset($get_byline) && is_array($get_byline) && isset($get_byline['slug']) && !empty($get_byline['slug'])) {
+                $person_twitter_handle = get_field('person_twitter_handle', 'person_' . $get_byline["term_id"]);
+
+                if (!empty($person_twitter_handle) && is_singular(get_post_type())) {
+                    $tweeter = "<a href=\"https://twitter.com/intent/user?screen_name=" .
+                               $person_twitter_handle .
+                               "\"><img src=\"" .
+                               content_url() .
+                               "/plugins/cap-byline/bird_blue_16.png\" class=\"twitter-bird\"></a>";
+                } else {
+                    $tweeter = "";
+                }
+
+                $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
+                if(has_filter('cap_byline_person_url')) {
+                    $get_byline["output"] = apply_filters('cap_byline_person_url', $tout, $get_byline['slug'], $get_byline['name'], $tweeter);
+                } else {
+                    $get_byline["output"] = $tout;
+                }
+
+                $byline_array[$person] = $get_byline;
+            }
+        }
+    }
+
+
+    #print "returning array for $post_id and $byline_field<br>\n";
+    #var_dump($byline_array);
+    #print "<br>\n";
+
+    return $byline_array;
+}
+
 /**
  * Display the list of authors along with the post time.
  */
-function get_cap_byline($type, $post_id) {
+function get_cap_byline($type, $post_id)
+{
+    #print "In get_cap_byline for $type and $post_id<br>\n";
+
     // If is a single post page display the time, otherwise just display only the date.
     if (is_singular() && true===get_field( 'global_display_post_time', 'options')) {
         $time_format = 'F j, Y \a\t g:i a';
@@ -600,9 +614,14 @@ function get_cap_byline($type, $post_id) {
         esc_html( strftime($strtime_format, strtotime(preg_replace("/ at/", "", get_the_modified_date($time_format, $post_id))))) //%4$s
     );
 
-    $auth_array = get_cap_authors($post_id, null, true, null);
-    $with_array = get_cap_authors($post_id, null, true, null, "byline_with_array");
+    $auth_array = get_cap_author_list($post_id);
+    $with_array = get_cap_author_list($post_id, "byline_with_array");
 
+    return get_capbyline_markup($type, $auth_array, $with_array, $time_string);
+}
+
+function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_string = "")
+{
     $markup = array();
     if ( 'dateonly' == $type ) {
          $markup[] = '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
@@ -611,8 +630,8 @@ function get_cap_byline($type, $post_id) {
             $markup[] = ' '
                       . ucfirst(has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline'))
                       . ' '
-                      . get_cap_authors($post_id, null, null, null);
-            $markup[] = (get_post_meta($post_id, 'byline_with_array', true) ? ' ' . __('with', 'cap-byline') . ' ' . get_cap_authors($post_id, null, null, null, "byline_with_array") : "");
+                      . get_byline_output($auth_array, true, null, null);
+            $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null) : "");
         }
     } else {
 
@@ -626,18 +645,11 @@ function get_cap_byline($type, $post_id) {
             if(is_array($auth_array) && count($auth_array) >= 1) {
                 $markup[] = '<span class="byline"> ';
                 $markup[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline')) . ' ';
-                if ('nolinks' == $type) {
-                    $markup[] = get_cap_authors($post_id, true, null, null);
-                } else {
-                    $markup[] = get_cap_authors($post_id, null, null, null);
-                }
+                $markup[] = get_byline_output($auth_array, ('nolinks' == $type), null, null);
+
                 if(is_array($with_array) && count($with_array) >= 1) {
                     $markup[] = (has_filter('cap_byline_with') ? apply_filters('cap_byline_with', "") : __('with', 'cap-byline')) . ' ';
-                    if ('nolinks' == $type) {
-                        $markup[] = get_cap_authors($post_id, true, null, null, "byline_with_array");
-                    } else {
-                        $markup[] = get_cap_authors($post_id, null, null, null, "byline_with_array");
-                    }
+                    $markup[] = get_byline_output($with_array, ('nolinks' == $type), null, null);
                 }
                 $markup[] = '</span>';
             }
@@ -661,8 +673,11 @@ function get_cap_byline($type, $post_id) {
     return implode("\n", $markup);
 }
 
-function cap_byline($type) {
+function cap_byline($type)
+{
     global $post;
+    #print "In cap_byline for $type<br>\n";
+
     echo get_cap_byline($type, $post->ID);
 }
 
