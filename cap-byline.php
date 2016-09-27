@@ -523,7 +523,7 @@ function _cap_implode($the_array)
     $last_item = array_pop($the_array);
 
     $output = implode(', ', $the_array);
-    $output .= ($output ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', "") : ' & ') : "") . $last_item;
+    $output .= ($output ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $the_array) : ' & ') : "") . $last_item;
 
     return $output;
 }
