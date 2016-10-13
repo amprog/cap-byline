@@ -559,7 +559,13 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
                     $tweeter = "";
                 }
 
-                $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
+                // add a link if person_is_linked is set
+                if (get_field('person_is_linked', 'person_' . $get_byline["term_id"])) {
+                    $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
+                } else {
+                    $tout = $get_byline['name'] . $tweeter;
+                }
+
                 if(has_filter('cap_byline_person_url')) {
                     $get_byline["output"] = apply_filters('cap_byline_person_url', $tout, $get_byline['slug'], $get_byline['name'], $tweeter);
                 } else {
