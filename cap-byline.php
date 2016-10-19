@@ -559,7 +559,13 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
                     $tweeter = "";
                 }
 
-                $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
+                // add a link if person_is_linked is set
+                if (get_field('person_is_linked', 'person_' . $get_byline["term_id"])) {
+                    $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
+                } else {
+                    $tout = $get_byline['name'] . $tweeter;
+                }
+
                 if(has_filter('cap_byline_person_url')) {
                     $get_byline["output"] = apply_filters('cap_byline_person_url', $tout, $get_byline['slug'], $get_byline['name'], $tweeter);
                 } else {
@@ -589,7 +595,7 @@ function get_cap_byline($type, $post_id)
     // If is a single post page display the time, otherwise just display only the date.
     if (is_singular() && true===get_field( 'global_display_post_time', 'options')) {
         $time_format = 'F j, Y \a\t g:i a';
-        $strtime_format = "%B %e, %G %I:%M%P";
+        $strtime_format = "%B %e, %G, %l:%M %P";
     } else {
         $time_format = 'F j, Y';
         $strtime_format = "%B %e, %G";
@@ -644,7 +650,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
         } else {
             if(is_array($auth_array) && count($auth_array) >= 1) {
                 $markup[] = '<span class="byline"> ';
-                $markup[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline')) . ' ';
+                $markup[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('By', 'cap-byline')) . ' ';
                 $markup[] = get_byline_output($auth_array, ('nolinks' == $type), null, null);
 
                 if(is_array($with_array) && count($with_array) >= 1) {
