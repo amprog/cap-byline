@@ -551,6 +551,9 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
 
                 $active = get_field('person_is_inactive', 'person_' . $get_byline["term_id"]);
 
+                #var_dump($active);
+                #var_dump(get_field('person_is_linked', 'person_' . $get_byline["term_id"]));
+
                 if (isset($active) && !$active && !empty($person_twitter_handle) && is_singular(get_post_type())) {
                     $tweeter = "<a href=\"https://twitter.com/intent/user?screen_name=" .
                                $person_twitter_handle .
