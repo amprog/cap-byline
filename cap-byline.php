@@ -520,12 +520,18 @@ function get_byline_output($byline_array, $disable_link=false, $as_array=false, 
 
 function _cap_implode($the_array)
 {
+    #var_dump($the_array);
+
     $last_item = array_pop($the_array);
 
-    $output = implode(', ', $the_array);
-    $output .= ($output ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $the_array) : ' & ') : "") . $last_item;
+    $output = array();
+    $output[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('By', 'cap-byline')) . ' ';
+    $output[] = implode(', ', $the_array);
+    $output[] = (count($the_array) ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $the_array) : ' & ') : "") . $last_item;
 
-    return $output;
+    #var_dump($output);
+
+    return implode("", $output);
 }
 
 function get_cap_author_list($post_id, $byline_field='byline_array')
