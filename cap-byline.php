@@ -644,10 +644,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
          $markup[] = '<span class="posted-on' . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'.$time_string.'</span>';
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup[] = ' '
-                      . ucfirst(has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('by', 'cap-byline'))
-                      . ' '
-                      . get_byline_output($auth_array, true, null, null);
+            $markup[] = get_byline_output($auth_array, true, null, null);
             $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null) : "");
         }
     } else {
@@ -661,7 +658,6 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
         } else {
             if(is_array($auth_array) && count($auth_array) >= 1) {
                 $markup[] = '<span class="byline"> ';
-                $markup[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('By', 'cap-byline')) . ' ';
                 $markup[] = get_byline_output($auth_array, ('nolinks' == $type), null, null);
 
                 if(is_array($with_array) && count($with_array) >= 1) {
