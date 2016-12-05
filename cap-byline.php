@@ -555,12 +555,12 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
             if(isset($get_byline) && is_array($get_byline) && isset($get_byline['slug']) && !empty($get_byline['slug'])) {
                 $person_twitter_handle = get_field('person_twitter_handle', 'person_' . $get_byline["term_id"]);
 
-                $active = get_field('person_is_inactive', 'person_' . $get_byline["term_id"]);
+                $inactive = get_field('person_is_inactive', 'person_' . $get_byline["term_id"]);
 
                 #var_dump($active);
                 #var_dump(get_field('person_is_linked', 'person_' . $get_byline["term_id"]));
 
-                if (isset($active) && !$active && !empty($person_twitter_handle) && is_singular(get_post_type())) {
+                if (isset($inactive) && !$inactive && !empty($person_twitter_handle) && is_singular(get_post_type())) {
                     $tweeter = "<a href=\"https://twitter.com/intent/user?screen_name=" .
                                $person_twitter_handle .
                                "\"><img src=\"" .
@@ -571,7 +571,7 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
                 }
 
                 // add a link if person_is_linked is set
-                if (isset($active) && !$active && get_field('person_is_linked', 'person_' . $get_byline["term_id"])) {
+                if (isset($inactive) && !$inactive && get_field('person_is_linked', 'person_' . $get_byline["term_id"])) {
                     $tout = sprintf('<a href="/?person=%s">%s</a>%s', $get_byline['slug'], $get_byline['name'], $tweeter);
                 } else {
                     $tout = $get_byline['name'] . $tweeter;
