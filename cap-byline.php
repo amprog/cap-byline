@@ -14,9 +14,14 @@ $plugin_dir = plugin_dir_path( __FILE__ );
  * Create person taxonomy
  */
 function person_tax_create() {
+    // Don't want to apply person taxonomy to popup or popup_theme post types
+    // so filter them from the list of post types before registering
+    // the taxonomy
+    $post_types = array_diff(get_post_types(), array('popup','popup_theme'));
+
     register_taxonomy(
         'person',
-        get_post_types(),
+        $post_types,
         array(
             'label' => __( 'Person', 'cap-byline' ),
             'rewrite' => array( 'slug' => 'person', 'with_front' => false ),
@@ -388,6 +393,16 @@ if( function_exists("register_field_group") ) {
                     'param' => 'post_type',
                     'operator' => '!=',
                     'value' => 'page',
+                ),
+                array (
+                    'param' => 'post_type',
+                    'operator' => '!=',
+                    'value' => 'popup',
+                ),
+                array (
+                    'param' => 'post_type',
+                    'operator' => '!=',
+                    'value' => 'popup_theme',
                 ),
             ),
 
