@@ -498,7 +498,7 @@ function get_cap_authors($post_id, $disable_link=false, $as_array=false, $return
 }
 
 
-function get_byline_output($byline_array, $disable_link=false, $as_array=false, $return_slugs=true)
+function get_byline_output($byline_array, $disable_link=false, $as_array=false, $return_slugs=true, $add_by=true)
 {
     if (empty($byline_array)) {
         return ($as_array ? $byline_array : "");
@@ -518,7 +518,7 @@ function get_byline_output($byline_array, $disable_link=false, $as_array=false, 
         if(true == $as_array) {
             return $names;
         } else {
-            return _cap_implode($names);
+            return _cap_implode($names, $add_by);
         }
     } else {
         $output = array();
@@ -528,19 +528,21 @@ function get_byline_output($byline_array, $disable_link=false, $as_array=false, 
         if(true == $as_array) {
             return $output;
         } else {
-            return _cap_implode($output);
+            return _cap_implode($output, $add_by);
         }
     }
 }
 
-function _cap_implode($the_array)
+function _cap_implode($the_array, $add_by=true)
 {
     #var_dump($the_array);
 
     $last_item = array_pop($the_array);
 
     $output = array();
-    $output[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('By', 'cap-byline')) . ' ';
+    if($add_by) {
+    	$output[] = (has_filter('cap_byline_by') ? apply_filters('cap_byline_by', "") : __('By', 'cap-byline')) . ' ';
+    }
     $output[] = implode(', ', $the_array);
     $output[] = (count($the_array) ? (has_filter('cap_byline_and') ? apply_filters('cap_byline_and', $the_array) : ' & ') : "") . $last_item;
 
@@ -660,7 +662,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
     } elseif ( 'bylineonly' == $type ) {
         if(is_array($auth_array) && count($auth_array) >= 1) {
             $markup[] = get_byline_output($auth_array, true, null, null);
-            $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null) : "");
+            $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null, false) : "");
         }
     } else {
 
@@ -677,7 +679,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
 
                 if(is_array($with_array) && count($with_array) >= 1) {
                     $markup[] = (has_filter('cap_byline_with') ? apply_filters('cap_byline_with', "") : __('with', 'cap-byline')) . ' ';
-                    $markup[] = get_byline_output($with_array, ('nolinks' == $type), null, null);
+                    $markup[] = get_byline_output($with_array, ('nolinks' == $type), null, null, false);
                 }
                 $markup[] = '</span>';
             }
