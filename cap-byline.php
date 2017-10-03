@@ -211,6 +211,17 @@ if( function_exists("register_field_group") ) {
                 'append' => '',
             ),
             array (
+                'key' => 'field_540f06f598930',
+                'label' => __('Contact Form Target Email', 'cap-byline'),
+                'name' => 'contact_form_target_email',
+                'instructions' => __('If you would like the contact form on this person to forward messages to an email other than the persons Contact Email enter is here, otherwise leave this field blank.' , 'cap-byline'),
+                'type' => 'email',
+                'default_value' => '',
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ),
+            array (
                 'key' => 'field_539efea738186',
                 'label' => __('Twitter Handle', 'cap-byline'),
                 'name' => 'person_twitter_handle',
@@ -856,7 +867,7 @@ if ( ! function_exists( 'cap_person_bio' ) ) {
 
 function cap_byline_contact_form_email($entry, $form) {
     if ( $form["id"] == get_field('author_contact_form_id', 'options') ) {
-        $email_to = get_field( 'person_email', 'person_'.$entry[4] );
+        $email_to = get_field( 'contact_form_target_email', 'person_'.$entry[4] ) ? get_field( 'contact_form_target_email', 'person_'.$entry[4] ) : get_field( 'person_email', 'person_'.$entry[4] );
         $email_from_first = $entry['1.3'];
         $email_from_last = $entry['1.6'];
         $email_from = $entry[2];
