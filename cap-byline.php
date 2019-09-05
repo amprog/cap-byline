@@ -922,16 +922,4 @@ function get_the_cap_author_facebook_ids() {
     return $facebook_ids;
 }
 
-/*
- * Make sure that if "inactive" is checked, "Is a Press Contact?" and "Is a GA Contact?" are then unchecked
- */
-function cap_byline_acf_save_post( $post_id ) {
-    // Bail early if no data sent.
-    if( empty($_POST['acf']) ) {
-        return;
-    }
-    echo "<pre>" . print_r($_POST['acf'] . "</pre>";
-}
-add_action('acf/save_post', 'cap_byline_acf_save_post', 5);
-
 include $plugin_dir.'/migration.php';
