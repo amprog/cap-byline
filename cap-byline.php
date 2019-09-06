@@ -259,11 +259,11 @@ if( function_exists("register_field_group") ) {
                 'name' => 'person_is_inactive',
                 'type' => 'true_false',
                 'instructions' => __('Checking this field if this person no longer works at CAP. It will prevent this person from being displayed anywhere on the front end.', 'cap-byline'),
-                'wrapper': {
-                    'width': '',
-                    'class': 'person_is_inactive',
-                    'id': ''
-                },
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => 'person_is_inactive',
+                    'id' => ''
+                ),
                 'message' => '',
                 'default_value' => 0,
             ),
