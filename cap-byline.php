@@ -680,7 +680,12 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
             $markup[] = get_byline_output($auth_array, true, null, null);
             $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null, false) : "");
         }
-    } else {
+    } elseif ( 'bylinelink' == $type ) {
+        if(is_array($auth_array) && count($auth_array) >= 1) {
+            $markup[] = get_byline_output($auth_array, false, null, null);
+            $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, false, null, null, false) : "");
+        }
+    }  else {
 
         if( has_filter('cap_full_byline_open') ) {
             $markup[] = apply_filters('cap_full_byline_open', $content);
