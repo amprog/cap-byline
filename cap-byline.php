@@ -3,15 +3,11 @@
  * Plugin Name: CAP Byline
  * Plugin URI: https://github.com/amprog/cap-byline
  * Description: Provides a CAP standardized method for choosing authors for posts
- * Version: 1.7.0
+ * Version: 1.7.1
  * Author: Seth Rubenstein for Center for American Progress
  * Author URI: https://github.com/amprog
  * License: GPL2
  */
- 
-error_reporting(E_ALL);
-ini_set('display_errors', true);
- 
 $plugin_dir = plugin_dir_path( __FILE__ );
 
 /**
@@ -263,11 +259,11 @@ if( function_exists("register_field_group") ) {
                 'name' => 'person_is_inactive',
                 'type' => 'true_false',
                 'instructions' => __('Checking this field if this person no longer works at CAP. It will prevent this person from being displayed anywhere on the front end.', 'cap-byline'),
-                'wrapper': {
-                    'width': '',
-                    'class': 'person_is_inactive',
-                    'id': ''
-                },
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => 'person_is_inactive',
+                    'id' => ''
+                ),
                 'message' => '',
                 'default_value' => 0,
             ),
@@ -625,6 +621,7 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
         }
     }
 
+
     #print "returning array for $post_id and $byline_field<br>\n";
     #var_dump($byline_array);
     #print "<br>\n";
@@ -683,12 +680,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
             $markup[] = get_byline_output($auth_array, true, null, null);
             $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, true, null, null, false) : "");
         }
-    } elseif ( 'bylinelinks' == $type ) {
-        if(is_array($auth_array) && count($auth_array) >= 1) {
-            $markup[] = get_byline_output($auth_array, false, null, null);
-            $markup[] = (is_array($with_array) && count($with_array) >= 1 ? ' ' . __('with', 'cap-byline') . ' ' . get_byline_output($with_array, false, null, null, false) : "");
-        }
-    }  else {
+    } else {
 
         if( has_filter('cap_full_byline_open') ) {
             $markup[] = apply_filters('cap_full_byline_open', $content);
@@ -724,7 +716,6 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
             $markup[] = apply_filters('cap_full_byline_close', $content);
         }
     }
-    
     return implode("\n", $markup);
 }
 
