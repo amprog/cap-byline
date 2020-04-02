@@ -721,6 +721,12 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
             $markup[] = apply_filters('cap_full_byline_close', $content);
         }
     }
+    
+    echo "<pre>" . print_r($type, true) . "</pre>";
+    echo "<pre>" . print_r($auth_array, true) . "</pre>";
+    echo "<pre>" . print_r($with_array, true) . "</pre>";
+    echo "<pre>" . print_r($time_string, true) . "</pre>";
+    
     return implode("\n", $markup);
 }
 
