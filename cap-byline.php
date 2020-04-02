@@ -8,6 +8,10 @@
  * Author URI: https://github.com/amprog
  * License: GPL2
  */
+ 
+error_reporting(E_ALL);
+ini_set('display_errors', true);
+ 
 $plugin_dir = plugin_dir_path( __FILE__ );
 
 /**
@@ -620,7 +624,6 @@ function get_cap_author_list($post_id, $byline_field='byline_array')
             }
         }
     }
-
 
     #print "returning array for $post_id and $byline_field<br>\n";
     #var_dump($byline_array);
