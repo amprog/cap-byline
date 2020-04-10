@@ -711,7 +711,7 @@ function get_capbyline_markup($type, $auth_array, $with_array = array(), $time_s
         } else {
             $markup[] = ' <span class="posted-on'
                       . ((is_array($auth_array) && count($auth_array) >= 1) ? '' : '-empty') . '">'
-                      . ucfirst(has_filter('cap_byline_published') ? apply_filters('cap_byline_published', "") : "")
+                      . ucfirst(has_filter('cap_byline_published') ? apply_filters('cap_byline_published', "") : __('Posted on', 'cap-byline'))
                       . ' '
                       . $time_string
                       . '</span>';
